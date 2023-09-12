@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Exemplo de AJAX POST com jQuery</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Exemplo de AJAX POST com jQuery</h1>
+
+    <form id="formulario">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome">
+        <br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email">
+        <br>
+        <button type="submit">Enviar</button>
+    </form>
+
+    <div id="resultado">
+        <!-- Os resultados da solicitação AJAX serão exibidos aqui -->
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Quando o formulário for enviado
+            $("#formulario").submit(function (event) {
+                event.preventDefault(); // Impede o comportamento padrão do formulário
+
+                // Obtem os dados do formulário
+                var nome = $("#nome").val();
+                var email = $("#email").val();
+
+                // Cria um objeto com os dados a serem enviados
+                var dados = {
+                    nome: nome,
+                    email: email
+                };
+
+                // Faz uma solicitação AJAX POST para uma API
+                $.ajax({
+                    url: "https://jsonplaceholder.typicode.com/posts", // URL da API de exemplo
+                    method: "POST",
+                    data: dados,
+                    success: function (data) {
+                        // A função de sucesso é chamada quando a solicitação é bem-sucedida
+                        // 'data' contém os dados retornados pela API (no formato JSON)
+
+                        // Exibe os resultados na div 'resultado'
+                        $("#resultado").html("<h2>Dados Enviados com Sucesso</h2><p>ID do Novo Post: " + data.id + "</p>");
+                    },
+                    error: function () {
+                        // A função de erro é chamada se houver algum problema com a solicitação AJAX
+                        $("#resultado").html("<p>Ocorreu um erro ao enviar os dados.</p>");
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
