@@ -1,0 +1,1 @@
+INSERT INTO `db_cliente`.`clientes` (`rasão_social`, `nome_fantasia`, `telefone`, `email`) VALUES ('jonatas', 'jaoa', '7185456852', 'hote@gmail.com');
