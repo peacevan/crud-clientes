@@ -4,15 +4,16 @@ namespace app\Model;
 use app\Model\Endereco;
 use JsonSerializable;
 class Cliente implements JsonSerializable {
-    private $razaoSocial;
-    private $nomeFantasia;
-    private $email;
-    private $telefone;
-    private $cnpj;
-    private $id;
-    private Endereco $endereco;
+    private ?string $razaoSocial;
+    private ?string  $nomeFantasia;
+    private ?string  $email;
+    private ?string  $telefone;
+    private ?string  $cnpj;
+    private ?int  $id;
+    private  $endereco;
        
     public function __construct( array $dadosRequest, Endereco $enderecoRequest) {
+     if($dadosRequest){
         $this->id = array_key_exists('id',$dadosRequest)? $dadosRequest['id'] : null;   
         $this->razaoSocial =  $dadosRequest['razao_social'];
         $this->nomeFantasia = $dadosRequest['nome_fantasia'];
@@ -20,6 +21,7 @@ class Cliente implements JsonSerializable {
         $this->telefone = $dadosRequest['telefone'];
         $this->cnpj = $dadosRequest['cnpj'];
         $this->endereco = $enderecoRequest;
+      }
     }
     
     // Getters e Setters para os atributos
@@ -83,7 +85,7 @@ class Cliente implements JsonSerializable {
     public function jsonSerialize(): mixed
     {
         $vars = get_object_vars($this);
-        $vars['endereco']= $this->endereco->jsonSerialize();
+        //$vars['endereco']= $this->endereco->jsonSerialize();
         return $vars;
     }
 }

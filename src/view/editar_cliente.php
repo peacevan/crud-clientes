@@ -15,8 +15,9 @@
 
     <form id="formulario">
         <div>
-
+  
         <h3>Dados Do Cliente</h3>
+        <input type="hidden" id="id" name="id">
         <label for="razao_social">Razão social:</label>
         <input type="text" id="razao_social" name="razao_social">
         <br>
@@ -90,8 +91,13 @@
 
     <script>
         $(document).ready(function () {
+            debugger;
+            $("#id").val(44);
 
-
+            if($('#id').val() != ''){
+                loadFormularioAjax($('#id').val()); 
+            }
+  
         });
         function enviar_dados(){
             event.preventDefault(); // Impede o comportamento padrão do formulário
@@ -104,6 +110,7 @@
                 var telefone      = $("#telefone").val();
                 var email         = $("#email").val();
                 var cnpj          = $("#cnpj").val();
+                var id          = $("#id").val();
                 // Cria um objeto com os dados a serem enviados
                 var dadosEndereco = {
                     logradouro: $("#logradouro").val(),
@@ -115,6 +122,7 @@
                     cep: $("#cep").val()
                 }
                 var dados = {
+                    id: id,
                     razao_social: razao_social,
                     nome_fantasia: nome_fantasia,
                     telefone: telefone,
@@ -126,19 +134,20 @@
                 // Faz uma solicitação AJAX POST para uma API
                 $.ajax({
                     url: "http://localhost:81/src/Controller/ClienteController.php", // URL da API de exemplo
-                    method: "POST",
+                    method: "PUT",
+                   // dataType: "json",
                     data: dados,
                     success: function (data) {
                         console.log(data);
-                        var objeto = JSON.parse(data);
-                        alert(objeto.message);
+                        //var objeto = JSON.parse(data);
+                       // alert(objeto.message);
                         // A função de sucesso é chamada quando a solicitação é bem-sucedida
                         // 'data' contém os dados retornados pela API (no formato JSON)
                         // Exibe os resultados na div 'resultado'
 
                         // Limpa o formulário
                         $('#formulario').each (function(){
-                        this.reset();
+                       // this.reset();
                        });
                      },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -192,6 +201,40 @@
             $("#municipio").val("Salvador");
             $("#pais").val("Brasil");
             $("#cep").val("12345-678");
+         }
+         function loadFormularioAjax(id_cliente){
+            
+            $('#id').val(id_cliente);
+            $.ajax({
+                    url: "http://localhost:81/src/Controller/ClienteController.php?id="+id_cliente, // URL da API de exemplo
+                    method: "GET",
+                    //data: dados,    
+                    success: function (data) {
+                        debugger;
+                        console.log(data['data']);
+              
+                        data=JSON.parse(data).data[0];
+                        $("#razao_social").val(data.razao_social);
+                        $("#nome_fantasia").val(data.nome_fantasia);
+                        $("#telefone").val(data.telefone);
+                        $("#email").val(data.email);
+                        $("#cnpj").val(data.cnpj);
+                        //endereço 
+                        $("#logradouro").val(data.logradouro);
+                        $("#bairro").val(data.bairro);
+                        $("#numero").val(data.numero);
+                        $("#estado").val(data.estado);
+                        $("#municipio").val(data.municipio);
+                        $("#pais").val(data.pais);
+                        $("#cep").val(data.cep);
+
+                        
+                    }, 
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("cliente não encontrado");
+                    }
+            });
+
          }
     </script>
 </body>

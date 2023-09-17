@@ -6,20 +6,20 @@ use JsonSerializable;
 
 class Endereco implements JsonSerializable
 {
-    private $logradouro;
-    private $bairro;
-    private $numero;
-    private $estado;
-    private $municipio;
-    private $pais;
-    private $cep;
-    private $id_cliente;
-    private $id;
+    private ?string $logradouro;
+    private ?string $bairro;
+    private ?string $numero;
+    private ?string $estado;
+    private ?string $municipio;
+    private ?string $pais;
+    private ?string $cep;
+    private ?string $id_cliente;
+    private ?int $id;
     private $validateEndereco;
 
-    public function __construct(array $dadosRequest)
+    public function __construct(?array $dadosRequest)
     {
-
+      if ($dadosRequest){
         $this->logradouro = $dadosRequest['logradouro'];
         $this->bairro = $dadosRequest['bairro'];
         $this->numero = $dadosRequest['numero'];
@@ -30,6 +30,7 @@ class Endereco implements JsonSerializable
         $this->id_cliente = array_key_exists('id_cliente',$dadosRequest)? $dadosRequest['id_cliente'] : null;   
         $this->id = array_key_exists('id',$dadosRequest)? $dadosRequest['id'] : null;
         $this->validateEndereco=$this->validaDadosEndereco();
+      }
     }
 
     // Getters e Setters para os atributos

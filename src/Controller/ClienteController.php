@@ -1,7 +1,7 @@
 <?php
 namespace app\controller;
 
-require_once(__DIR__.'/../../vendor/autoload.php');
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 use app\config\Connection;
 use app\Model\Cliente;
@@ -34,11 +34,11 @@ class ClienteController
     function inserirCliente(array $clienteRequest)
     {
         $this->setRequestCliente($clienteRequest);
-        $this->cliente = $this->clienteRepository->create($this->cliente); 
-        if($this->cliente->getId()){
+        $this->cliente = $this->clienteRepository->create($this->cliente);
+        if ($this->cliente->getId()) {
             $this->enderecoModel->setIdCliente($this->cliente->getId());
             $newEndereco = $this->enderecoRepository->create($this->enderecoModel);
-            $this->cliente->setEndereco($newEndereco);              
+            $this->cliente->setEndereco($newEndereco);
         }
         return $this->cliente;
     }
@@ -53,34 +53,25 @@ class ClienteController
     }
     public function deleteCliente($id)
     {
-        $cliente = $this->clienteRepository->findById($id);
-
-        if ($cliente) {
-            $this->clienteRepository->delete($cliente);
-            return $this->getMessageResponse(200, "Cliente deletado com sucesso.", null);
-        } else {
-            return $this->getMessageResponse(400, "Erro ao excluir cliente.", null);
-        }
+        //$cliente = $this->clienteRepository->findById($id);
+        //if ($cliente) {
+        return $this->clienteRepository->delete($id);
+        // } else {
+        //      return $this->getMessageResponse(400, "Erro ao excluir cliente.", null);
+        //  }
     }
 
-    public function editarCliente($id, $dados)
+    public function editarCliente($clienteModel)
     {
         try {
-            $cliente = $this->clienteRepository->findById($id);
 
-            if ($cliente) {
-                // Atualiza os dados do cliente com base nos dados fornecidos
-                $cliente->setRazaoSocial($dados['razao_social']);
-                $cliente->setNomeFantasia($dados['nome_fantasia']);
-                $cliente->setEmail($dados['email']);
-                $cliente->setTelefone($dados['telefone']);
-                $cliente->setCnpj($dados['cnpj']);
-                $cliente->setEndereco($dados['endereco']);
 
-                $this->clienteRepository->update($cliente);
+            if ($clienteModel) {
+ 
+                $this->clienteRepository->update($clienteModel);
                 $jsonResponse = json_encode(array("coode" => 200,
                     "message" => "Cliente atualizado com sucesso.",
-                    "data" => $cliente));
+                    "data" => $clienteModel));
                 echo $jsonResponse;
             } else {
                 echo $this->getMessageResponse(500, "Cliente não encontrado", null);
@@ -91,17 +82,16 @@ class ClienteController
         }
     }
 
-    function getRequestEndereco( $renderecoRequest)
+    function getRequestEndereco($renderecoRequest)
     {
-       
 
         return array("logradouro" => $renderecoRequest['logradouro'],
             "bairro" => $renderecoRequest['bairro'],
             "numero" => $renderecoRequest['numero'],
             "estado" => $renderecoRequest['estado'],
             "municipio" => $renderecoRequest['municipio'],
-            "pais"   => $renderecoRequest['pais'],
-            "cep"    => $renderecoRequest['cep']);
+            "pais" => $renderecoRequest['pais'],
+            "cep" => $renderecoRequest['cep']);
     }
 
     function getRequestCliente($clienteRequest)
@@ -122,6 +112,9 @@ class ClienteController
         $this->cliente->setEmail($dados['email']);
         $this->cliente->setTelefone($dados['telefone']);
         $this->cliente->setCnpj($dados['cnpj']);
+        if(isset($dados['id'])){
+            $this->cliente->setId($dados['id']);
+        }
         //$this->cliente->setEndereco($dados['endereco']);
         return $this->cliente;
     }
@@ -137,27 +130,53 @@ class ClienteController
 
         switch ($_SERVER["REQUEST_METHOD"]) {
             case 'POST':
-               
-                $this->requestCliente =$_POST;   //$this->getRequestCliente($_POST);
+                $this->requestCliente = $_POST; //$this->getRequestCliente($_POST);
                 $this->requestEndereco = $this->getRequestEndereco($_POST['endereco']);
                 $validateEndereco = $this->enderecoModel->getValidaDadosEndereco()['validate'];
+
                 if ($validateEndereco) {
-                   return $this->inserirCliente($this->requestCliente);
-                   echo $this->getMessageResponse(200, 'Dados de endereço inseridos com sucesso', null);
-                } 
-                else {
+                    $result = $this->inserirCliente($this->requestCliente);
+                    echo $this->getMessageResponse(200, 'cliente cadastrado com sucesso', $result);
+                } else {
                     echo $this->getMessageResponse(400, 'Dados de endereço inválidos', null);
                 }
-
                 break;
-
             case 'GET':
-                $this->listarCliente();
+
+                if (array_key_exists('id', $_GET)) {
+                    $result = $this->listarCliente($_GET['id']);
+                    echo $this->getMessageResponse(200, "cliente encontrado", $result);
+                    return true;
+                }
+                $result = $this->listarCliente();
+                echo $this->getMessageResponse(200, "lista.", $result);
                 break;
             case 'DELETE':
-                $this->deleteCliente($_POST['id']);
+                $result = $this->deleteCliente($_GET['id_cliente']);
+
+                if ($result) {
+                    echo $this->getMessageResponse(200, "Cliente deletado com sucesso.", $result);
+                } else {
+                    echo $this->getMessageResponse(400, "Erro ao excluir cliente.", $result);
+                }
+                return;
+                break;
             case 'PUT':
-                $this->editarCliente($_POST['id'], $_POST);
+                parse_str(file_get_contents("php://input"), $request);
+               
+                $this->requestCliente = $this->setRequestCliente($request);
+                $this->requestEndereco = $this->getRequestEndereco($request['endereco']);
+                
+                // $validateEndereco = $this->enderecoModel->getValidaDadosEndereco()['validate'];
+                $validateEndereco = true;
+                if ($validateEndereco) {
+                  
+                    $result = $this->editarCliente($this->requestCliente);
+                    echo $this->getMessageResponse(200, 'cliente cadastrado com sucesso', $result);
+                } else {
+                    echo $this->getMessageResponse(400, 'Dados de endereço inválidos', null);
+                }
+                break;
 
         }
 
@@ -166,16 +185,17 @@ class ClienteController
 }
 
 //conexão
- $conn = Connection::getInstance()->getConection();
+$conn = Connection::getInstance()->getConection();
 
 //instancia os models
 
-$enderecoModel = new Endereco($_POST['endereco']);
+$requestEndereco = array_key_exists('endereco', $_POST) ? $_POST['endereco'] : null;
+$enderecoModel = new Endereco($requestEndereco);
 $clienteModel = new Cliente($_POST, $enderecoModel);
 
 //instancia os repositories
 $enderecoRepository = new EnderecoRepository($conn, $enderecoModel);
 $clinteRepository = new ClienteRepository($conn);
+$clienteController = new ClienteController($clinteRepository, $enderecoRepository, $clienteModel, $enderecoModel);
 
-$clienteController = new ClienteController($clinteRepository, $enderecoRepository, $clienteModel,$enderecoModel);
 $clienteController->runController();
