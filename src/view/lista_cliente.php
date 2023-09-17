@@ -14,13 +14,11 @@
                     $.each(data, function(index, cliente) {
                         // Cria uma nova linha na tabela
                         var newRow = $("<tr>");
-
                         // Adiciona as células com os dados do cliente
                         newRow.append("<td>" + cliente.razao_social + "</td>");
                         newRow.append("<td>" + cliente.nome_fantasia + "</td>");
                         newRow.append("<td>" + cliente.email + "</td>");
                         newRow.append("<td>" + cliente.telefone + "</td>");
-
                         // Adiciona a nova linha à tabela
                         $("#clientesTable").append(newRow);
                     });

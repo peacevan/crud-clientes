@@ -1,0 +1,25 @@
+{
+    "name": "app/crud-cliente",
+    "description": "crud php",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Amado",
+            "email": "peacevan@gmail.com"
+        }
+    ],
+
+    "autoload": {   
+        "psr-4": {
+            "app\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.3"
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
