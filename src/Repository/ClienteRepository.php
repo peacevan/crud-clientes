@@ -1,7 +1,7 @@
 <?php
 namespace app\Repository;
 
-require './vendor/autoload.php';
+//require './vendor/autoload.php';
 use app\config\Connection;
 use app\Model\Cliente;
 use PDO;
@@ -38,13 +38,19 @@ class ClienteRepository
     public function create(Cliente $cliente)
     {
         $query = "INSERT INTO clientes (razao_social, nome_fantasia, email, telefone, cnpj)
-                  VALUES (:razaoSocial, :nomeFantasia, :email, :telefone, :cnpj)";
+                  VALUES (:razao_social, :nome_santasia, :email, :telefone, :cnpj)";
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":razaoSocial", $cliente->getRazaoSocial());
-        $stmt->bindParam(":nomeFantasia", $cliente->getNomeFantasia());
-        $stmt->bindParam(":email", $cliente->getEmail());
-        $stmt->bindParam(":telefone", $cliente->getTelefone());
-        $stmt->bindParam(":cnpj", $cliente->getCnpj());
+        $razao=$cliente->getRazaoSocial();
+        $fantasia=$cliente->getNomeFantasia();
+        $email=$cliente->getEmail();
+        $telefone=$cliente->getTelefone();
+        $cnpj=$cliente->getCnpj();
+
+        $stmt->bindParam(":razao_social",$razao);
+        $stmt->bindParam(":nome_santasia", $fantasia);
+        $stmt->bindParam(":email", $email);
+        $stmt->bindParam(":telefone",$telefone);
+        $stmt->bindParam(":cnpj",$cnpj);
         //$stmt->bindParam(":endereco", $cliente->getEndereco());
         $stmt->execute();
         $id = $this->conn->lastInsertId();

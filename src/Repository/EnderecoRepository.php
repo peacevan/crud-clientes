@@ -1,6 +1,6 @@
 <?php
 namespace app\Repository;
-require './vendor/autoload.php';
+//require './vendor/autoload.php';
 use app\Model\Endereco;
 use PDO;
 use PDOException;   
@@ -35,14 +35,24 @@ class EnderecoRepository {
         $query = "INSERT INTO enderecos (numero,cep,logradouro,bairro, municipio, estado,pais,id_cliente) ";
         $query = $query . " VALUES (:numero,:cep,:logradouro,:bairro,:municipio,:estado,:pais,:id_cliente)"; 
         $stmt = $this->conn->prepare($query);
-        $stmt->bindParam(":numero", $endereco->getNumero());
-        $stmt->bindParam(":cep", $endereco->getCep());
-        $stmt->bindParam(":logradouro", $endereco->getLogradouro());
-        $stmt->bindParam(":bairro", $endereco->getBairro());
-        $stmt->bindParam(":municipio", $endereco->getCep());
-        $stmt->bindParam(":estado", $endereco->getEstado());
-        $stmt->bindParam(":pais", $endereco->getPais());
-        $stmt->bindParam(":id_cliente", $endereco->getIdCliente());
+       
+        $numero=$endereco->getNumero();
+        $cep=$endereco->getCep();
+        $logradouro=$endereco->getLogradouro();
+        $bairro=$endereco->getBairro();
+        $municipio=$endereco->getMunicipio();
+        $estado=$endereco->getEstado();
+        $pais=$endereco->getPais();
+        $id_cliente=$endereco->getIdCliente();
+
+        $stmt->bindParam(":numero",$numero);
+        $stmt->bindParam(":cep", $cep);
+        $stmt->bindParam(":logradouro", $logradouro);
+        $stmt->bindParam(":bairro", $bairro);
+        $stmt->bindParam(":municipio", $municipio);
+        $stmt->bindParam(":estado", $estado);
+        $stmt->bindParam(":pais", $pais);
+        $stmt->bindParam(":id_cliente", $id_cliente);
         $stmt->execute();
         $id=$this->conn->lastInsertId();
         $resultDb = $this->findById($id);
@@ -50,11 +60,11 @@ class EnderecoRepository {
     }
     
     public function update($endereco) {
-        $query = "UPDATE enderecos SET rua = :rua, numero = :numero, cidade = :cidade, estado = :estado WHERE id = :id";
+        $query = "UPDATE enderecos SET rua = :rua, numero = :numero, municipio = :municipio, estado = :estado WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":rua", $endereco->getRua());
         $stmt->bindParam(":numero", $endereco->getNumero());
-        $stmt->bindParam(":cidade", $endereco->getCidade());
+        $stmt->bindParam(":municipio", $endereco->getmunicipio());
         $stmt->bindParam(":estado", $endereco->getEstado());
         $stmt->bindParam(":id", $endereco->getId());
         return $stmt->execute();

@@ -1,7 +1,7 @@
 <?php
 namespace app\controller;
 
-require './vendor/autoload.php';
+require_once(__DIR__.'/../../vendor/autoload.php');
 
 use app\config\Connection;
 use app\Model\Cliente;
@@ -15,7 +15,6 @@ class ClienteController
 
     private ClienteRepository $clienteRepository;
     private EnderecoRepository $enderecoRepository;
-    private $conn;
     private $requestCliente;
     private $requestEndereco;
     private Cliente $cliente;
@@ -32,26 +31,25 @@ class ClienteController
         $this->cliente = $clienteModel;
         $this->enderecoModel = $enderecoModel;
     }
-    function inserirCliente(array $clienteRequest, array $enderecoRequest)
+    function inserirCliente(array $clienteRequest)
     {
         $this->setRequestCliente($clienteRequest);
-        $this->cliente = $this->clienteRepository->create($this->cliente); //tem que retornar o cliente prrenchido
-        $this->enderecoModel->setIdCliente($this->cliente->getId());
-        $newEndereco = $this->enderecoRepository->create($this->enderecoModel);
-
-        var_dump($newEndereco);
+        $this->cliente = $this->clienteRepository->create($this->cliente); 
+        if($this->cliente->getId()){
+            $this->enderecoModel->setIdCliente($this->cliente->getId());
+            $newEndereco = $this->enderecoRepository->create($this->enderecoModel);
+            $this->cliente->setEndereco($newEndereco);              
+        }
         return $this->cliente;
     }
 
     function listarCliente($id = null)
     {
-
         if ($id) {
             return $this->clienteRepository->findById($id);
         } else {
             return $this->clienteRepository->findByAll();
         }
-
     }
     public function deleteCliente($id)
     {
@@ -72,8 +70,8 @@ class ClienteController
 
             if ($cliente) {
                 // Atualiza os dados do cliente com base nos dados fornecidos
-                $cliente->setRazaoSocial($dados['razaoSocial']);
-                $cliente->setNomeFantasia($dados['nomeFantasia']);
+                $cliente->setRazaoSocial($dados['razao_social']);
+                $cliente->setNomeFantasia($dados['nome_fantasia']);
                 $cliente->setEmail($dados['email']);
                 $cliente->setTelefone($dados['telefone']);
                 $cliente->setCnpj($dados['cnpj']);
@@ -93,23 +91,23 @@ class ClienteController
         }
     }
 
-    function getRequestEndereco(Endereco $enderecoRequest)
+    function getRequestEndereco( $renderecoRequest)
     {
-        //valida request aqui ;
+       
 
-        return array("logradouro" => $_POST['logradouro'],
-            "bairro" => $_POST['bairro'],
-            "numero" => $_POST['numero'],
-            "estado" => $_POST['estado'],
-            "cidade" => $_POST['cidade'],
-            "pais" => $_POST['pais'],
-            "cep" => $_POST['cep']);
+        return array("logradouro" => $renderecoRequest['logradouro'],
+            "bairro" => $renderecoRequest['bairro'],
+            "numero" => $renderecoRequest['numero'],
+            "estado" => $renderecoRequest['estado'],
+            "municipio" => $renderecoRequest['municipio'],
+            "pais"   => $renderecoRequest['pais'],
+            "cep"    => $renderecoRequest['cep']);
     }
 
     function getRequestCliente($clienteRequest)
     {
-        return array("razaoSocial" => $_POST['razaoSocial'],
-            "nomeFantasia" => $_POST['nomeFantasia'],
+        return array("razao_social" => $_POST['razao_social'],
+            "nome_fantasia" => $_POST['nome_fantasia'],
             "email" => $_POST['email'],
             "telefone" => $_POST['telefone'],
             "cnpj" => $_POST['cnpj'],
@@ -119,8 +117,8 @@ class ClienteController
     function setRequestCliente($dados)
     {
         // Atualiza os dados do cliente com base nos dados fornecidos
-        $this->cliente->setRazaoSocial($dados['razaoSocial']);
-        $this->cliente->setNomeFantasia($dados['nomeFantasia']);
+        $this->cliente->setRazaoSocial($dados['razao_social']);
+        $this->cliente->setNomeFantasia($dados['nome_fantasia']);
         $this->cliente->setEmail($dados['email']);
         $this->cliente->setTelefone($dados['telefone']);
         $this->cliente->setCnpj($dados['cnpj']);
@@ -134,17 +132,20 @@ class ClienteController
 
     }
 
-    function run()
+    function runController()
     {
 
         switch ($_SERVER["REQUEST_METHOD"]) {
             case 'POST':
-                $this->requestCliente = $this->getRequestCliente($_POST);
-                $this->requestEndereco = $this->getRequestEndereco($_POST);
+               
+                $this->requestCliente =$_POST;   //$this->getRequestCliente($_POST);
+                $this->requestEndereco = $this->getRequestEndereco($_POST['endereco']);
                 $validateEndereco = $this->enderecoModel->getValidaDadosEndereco()['validate'];
                 if ($validateEndereco) {
-                    $this->inserirCliente($this->requestCliente, $this->requestEndereco);
-                } else {
+                   return $this->inserirCliente($this->requestCliente);
+                   echo $this->getMessageResponse(200, 'Dados de endereço inseridos com sucesso', null);
+                } 
+                else {
                     echo $this->getMessageResponse(400, 'Dados de endereço inválidos', null);
                 }
 
@@ -164,10 +165,17 @@ class ClienteController
 
 }
 
-$conn = Connection::getInstance()->getConection();
-$enderecoModel = new Endereco($this->requestEndereco);
-$clienteModel = new Cliente($this->requestCliente, $enderecoModel);
+//conexão
+ $conn = Connection::getInstance()->getConection();
+
+//instancia os models
+
+$enderecoModel = new Endereco($_POST['endereco']);
+$clienteModel = new Cliente($_POST, $enderecoModel);
+
+//instancia os repositories
 $enderecoRepository = new EnderecoRepository($conn, $enderecoModel);
 $clinteRepository = new ClienteRepository($conn);
-$clienteController = new ClienteController($clinteRepository, $enderecoRepository, $clienteModel, $enderecoModel);
-$clienteController->run($conn, $enderecoModel, $clienteModel, $enderecoRepository, $clinteRepository);
+
+$clienteController = new ClienteController($clinteRepository, $enderecoRepository, $clienteModel,$enderecoModel);
+$clienteController->runController();

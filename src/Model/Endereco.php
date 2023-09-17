@@ -1,17 +1,16 @@
 <?php
 namespace app\Model;
 
-require './vendor/autoload.php';
+//require './vendor/autoload.php';
 use JsonSerializable;
 
 class Endereco implements JsonSerializable
 {
-
     private $logradouro;
     private $bairro;
     private $numero;
     private $estado;
-    private $cidade;
+    private $municipio;
     private $pais;
     private $cep;
     private $id_cliente;
@@ -25,10 +24,10 @@ class Endereco implements JsonSerializable
         $this->bairro = $dadosRequest['bairro'];
         $this->numero = $dadosRequest['numero'];
         $this->estado = $dadosRequest['estado'];
-        $this->cidade = $dadosRequest['cidade'];
+        $this->municipio = $dadosRequest['municipio'];
         $this->pais = $dadosRequest['pais'];
         $this->cep = $dadosRequest['cep'];
-        $this->id_cliente = $dadosRequest['id_cliente'];
+        $this->id_cliente = array_key_exists('id_cliente',$dadosRequest)? $dadosRequest['id_cliente'] : null;   
         $this->id = array_key_exists('id',$dadosRequest)? $dadosRequest['id'] : null;
         $this->validateEndereco=$this->validaDadosEndereco();
     }
@@ -79,14 +78,14 @@ class Endereco implements JsonSerializable
         $this->estado = $estado;
     }
 
-    public function getCidade()
+    public function getmunicipio()
     {
-        return $this->cidade;
+        return $this->municipio;
     }
 
-    public function setCidade($cidade)
+    public function setmunicipio($municipio)
     {
-        $this->cidade = $cidade;
+        $this->municipio = $municipio;
     }
 
     public function getPais()
@@ -132,7 +131,7 @@ class Endereco implements JsonSerializable
         $this->bairro ? $result['bairro'] = true : $result['bairro'] = false;
         $this->numero ? $result['numero'] = true : $result['numero'] = false;
         $this->estado ? $result['estado'] = true : $result['estado'] = false;
-        $this->cidade ? $result['cidade'] = true : $result['cidade'] = false;
+        $this->municipio ? $result['municipio'] = true : $result['municipio'] = false;
         $this->pais ? $result['pais'] = true : $result['pais'] = false;
         trim($this->cep) ? $result['cep'] = true : $result['cep'] = false;
         $result['validate'] = true;
@@ -143,7 +142,7 @@ class Endereco implements JsonSerializable
         }
         return $result;
     }
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return get_object_vars($this);
     }

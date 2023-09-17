@@ -1,6 +1,6 @@
 <?php
 namespace app\Model;
-require './vendor/autoload.php';
+//require './vendor/autoload.php';
 use app\Model\Endereco;
 use JsonSerializable;
 class Cliente implements JsonSerializable {
@@ -13,12 +13,12 @@ class Cliente implements JsonSerializable {
     private Endereco $endereco;
        
     public function __construct( array $dadosRequest, Endereco $enderecoRequest) {
-        $this->id = $dadosRequest['id'];
-        $this->razaoSocial =  $dadosRequest['razaoSocial'];
-        $this->nomeFantasia = $dadosRequest['nomeFantasia'];
-        $this->email = $dadosRequest['$email'];
-        $this->telefone = $dadosRequest['$telefone'];
-        $this->cnpj = $dadosRequest['$cnpj'];
+        $this->id = array_key_exists('id',$dadosRequest)? $dadosRequest['id'] : null;   
+        $this->razaoSocial =  $dadosRequest['razao_social'];
+        $this->nomeFantasia = $dadosRequest['nome_fantasia'];
+        $this->email = $dadosRequest['email'];
+        $this->telefone = $dadosRequest['telefone'];
+        $this->cnpj = $dadosRequest['cnpj'];
         $this->endereco = $enderecoRequest;
     }
     
@@ -80,7 +80,7 @@ class Cliente implements JsonSerializable {
         $this->endereco = $endereco;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         $vars = get_object_vars($this);
         $vars['endereco']= $this->endereco->jsonSerialize();

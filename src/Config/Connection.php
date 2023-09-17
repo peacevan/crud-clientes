@@ -1,7 +1,7 @@
 <?php
 namespace app\config;
 
-require './vendor/autoload.php';
+//require './vendor/autoload.php';
 use PDO;
 
 class Connection
@@ -14,10 +14,10 @@ class Connection
 
     private function __construct($use, $pass, $host, $db)
     {
-        $this->use = $use;
-        $this->pass = $pass;
-        $this->host = $host;
-        $this->db = $db;
+        Connection::$use = $use;
+        Connection::$pass = $pass;
+        Connection::$host = $host;
+        Connection::$db = $db;
     }
     public static function getInstance($use = "root", $pass = '', $host = 'localhost', $db = 'crud-cliente')
     {
