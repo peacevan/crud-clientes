@@ -33,14 +33,19 @@ class ClienteController
     }
     function inserirCliente(array $clienteRequest)
     {
-        $this->setRequestCliente($clienteRequest);
-        $this->cliente = $this->clienteRepository->create($this->cliente);
-        if ($this->cliente->getId()) {
-            $this->enderecoModel->setIdCliente($this->cliente->getId());
-            $newEndereco = $this->enderecoRepository->create($this->enderecoModel);
-            $this->cliente->setEndereco($newEndereco);
+        $this->setRequestClienteModel($clienteRequest);
+        $this->setRequestEnderecoModel($clienteRequest['endereco']);
+        $result = $this->clienteRepository->create($this->cliente);
+        if ($result) {
+            if ($result->getId()) {
+                $this->enderecoModel->setIdCliente($result->getId());
+                
+                $newEndereco = $this->enderecoRepository->create($this->enderecoModel);
+                $this->cliente->setEndereco($newEndereco);
+            }
+            return $this->cliente;
         }
-        return $this->cliente;
+        return false;
     }
 
     function listarCliente($id = null)
@@ -59,9 +64,7 @@ class ClienteController
     public function editarCliente($clienteModel)
     {
         try {
-
             if ($clienteModel) {
-
                 $this->clienteRepository->update($clienteModel);
                 $jsonResponse = json_encode(array("coode" => 200,
                     "message" => "Cliente atualizado com sucesso.",
@@ -76,16 +79,16 @@ class ClienteController
         }
     }
 
-    function getRequestEndereco($renderecoRequest)
+    function setRequestEnderecoModel($enderecoRequest)
     {
-        return array(
-            "logradouro" => $renderecoRequest['logradouro'],
-            "bairro" => $renderecoRequest['bairro'],
-            "numero" => $renderecoRequest['numero'],
-            "estado" => $renderecoRequest['estado'],
-            "municipio" => $renderecoRequest['municipio'],
-            "pais" => $renderecoRequest['pais'],
-            "cep" => $renderecoRequest['cep']);
+        $this->enderecoModel->setLogradouro($enderecoRequest['logradouro']);
+        $this->enderecoModel->setBairro($enderecoRequest['bairro']);
+        $this->enderecoModel->setNumero($enderecoRequest['numero']);
+        $this->enderecoModel->setEstado($enderecoRequest['estado']);
+        $this->enderecoModel->setMunicipio($enderecoRequest['municipio']);
+        $this->enderecoModel->setPais($enderecoRequest['pais']);
+        $this->enderecoModel->setCep($enderecoRequest['cep']);
+        return $this->enderecoModel;
     }
 
     function getRequestCliente($clienteRequest)
@@ -98,7 +101,7 @@ class ClienteController
         );
 
     }
-    function setRequestCliente($dados)
+    function setRequestClienteModel($dados)
     {
         // Atualiza os dados do cliente com base nos dados fornecidos
         $this->cliente->setRazaoSocial($dados['razao_social']);
@@ -123,12 +126,12 @@ class ClienteController
 
         switch ($_SERVER["REQUEST_METHOD"]) {
             case 'POST':
-                $this->requestCliente = $_POST; //$this->getRequestCliente($_POST);
-                $this->requestEndereco = $this->getRequestEndereco($_POST['endereco']);
-                $validateEndereco = $this->enderecoModel->getValidaDadosEndereco()['validate'];
-
-                if ($validateEndereco) {
-                    $result = $this->inserirCliente($this->requestCliente);
+                $this->requestCliente = $_POST;
+                $this->requestEndereco = $_POST['endereco']?$_POST['endereco']:null;
+                //$validateEndereco = $this->enderecoModel->getValidaDadosEndereco()['validate'];
+                
+                $result = $this->inserirCliente($this->requestCliente);
+                if($result){
                     echo $this->getMessageResponse(200, 'cliente cadastrado com sucesso', $result);
                 } else {
                     echo $this->getMessageResponse(400, 'Dados de endereço inválidos', null);
@@ -156,7 +159,7 @@ class ClienteController
                 break;
             case 'PUT':
                 parse_str(file_get_contents("php://input"), $request);
-                $this->requestCliente  = $this->setRequestCliente($request);
+                $this->requestCliente = $this->setRequestCliente($request);
                 $this->requestEndereco = $this->getRequestEndereco($request['endereco']);
                 // $validateEndereco = $this->enderecoModel->getValidaDadosEndereco()['validate'];
                 $validateEndereco = true;
