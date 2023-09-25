@@ -14,14 +14,13 @@ tarefas:
 
 - [x] Montagem do ambiente  no windows
 - [x] criação da crud com PHP,Jquery,Ajax e Mysql
-- [x] montar o ambiente no linux
+- [ ] montar o ambiente no linux
 - [ ] correção de erro instalar o módul PHP no apache
 - [ ] corrigir erro de autentição Mysql  no ambiente linux
-- [x] corrigir a função inserir cliente
-- [x] criação do banco de dados e das tbelas
+- [ ] corrigir a função inserir cliente
+- [x] criação do banco de dados e das tabelas
 - [ ] refazer a crud com um microframework
 - [ ] Fazer uma API em laravel e  consumir com Jequery e Ajax
-- [ ] 
 - [ ] depuração do código com test automatizado
 
 ## 💻 Pré-requisitos
