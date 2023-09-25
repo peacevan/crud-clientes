@@ -17,7 +17,8 @@ tarefas:
 - [x] montar o ambiente no linux
 - [x] corrigir a função inserir cliente
 - [ ] refazer a crud com um microframework
-- [ ] refazer um api em laravel e integrar com o front end da primeira crud
+- [ ] refazer um API em laravel e  consumir com Jequery e Ajax
+  [ ]
 
 ## 💻 Pré-requisitos
 
@@ -40,7 +41,7 @@ Linux :
  2. instalação do apache
  3. instalação do mysql
  4. configuração do mysql
- 3. Habilitar modo de autenticação antiga no linux para logar  
+ 3. Habilitar modo de autenticação do MYSQL antiga no linux para logar com phpMyadmin
 
 
 
