@@ -6,27 +6,30 @@
 
 <img src="src/public/crud-cliente.png" alt="exemplo imagem">
 
-> Aula  PHP,MYSQL,jQUERY.
+> Crud  para aula prática de programação  PHP,MYSQL,jQUERY.
 
 ### Ajustes e melhorias
 
 tarefas:
 
 - [x] Montagem do ambiente  no windows
-- [x] criação da crud com PHP,Jquery e Mysql
+- [x] criação da crud com PHP,Jquery,Ajax e Mysql
 - [x] montar o ambiente no linux
+- [ ] correção de erro instalar o módul PHP no apache
+- [ ] corrigir erro de autentição Mysql  no ambiente linux
 - [x] corrigir a função inserir cliente
+- [x] criação do banco de dados e das tbelas
 - [ ] refazer a crud com um microframework
-- [ ] refazer um API em laravel e  consumir com Jequery e Ajax
-  [ ]
-  [ ] depuração do código com test automatizado
+- [ ] Fazer uma API em laravel e  consumir com Jequery e Ajax
+- [ ] 
+- [ ] depuração do código com test automatizado
 
 ## 💻 Pré-requisitos
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
 <!---Estes são apenas requisitos de exemplo. Adicionar, duplicar ou remover conforme necessário--->
-* Você instalou a versão mais recente de `<linguagem / dependência / requeridos>`
-* Você tem uma máquina `<Windows / Linux / Mac>`. Indique qual sistema 
+* Você instalou a versão mais recente de `<PHP/MYSQL/ PDO>`
+* Você tem uma máquina `<Windows / Linux />`.
 ## 🚀 Instalando ambiente no windows 
 Para montar o ambiente no windows, siga estas etapas:
 
@@ -43,18 +46,27 @@ Linux :
  3. instalação do mysql
  4. configuração do mysql
  3. Habilitar modo de autenticação do MYSQL antiga no linux para logar com phpMyadmin
+ ```
+Correção  do erro de autentição Mysql com o vsCode no ubuntu execute:
+sudo mysql
+SELECT user,authentication_string,plugin,host FROM mysql.user;
+para o modo nativo o mais antigo
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password';
+
+FLUSH PRIVILEGES;
+```
 
 
 
 ## ☕ Usando crud-cliente>
 
-Para usar <nome_do_projeto>, siga estas etapas:
+Para usar crud-cliente, siga estas etapas:
 
 ```
 <exemplo_de_uso>
 ```
 
-Adicione comandos de execução e exemplos que você acha que os usuários acharão úteis. Fornece uma referência de opções para pontos de bônus!
+
 
 ## 📫 Contribuindo para crud-cliente
 <!---Se o seu README for longo ou se você tiver algum processo ou etapas específicas que deseja que os contribuidores sigam, considere a criação de um arquivo CONTRIBUTING.md separado--->
