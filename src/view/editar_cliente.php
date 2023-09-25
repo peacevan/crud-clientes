@@ -1,10 +1,10 @@
 
 
 <?php 
-     include_once '../../src/view/header.php';
+ 
+    include_once '../../src/view/header.php';
     ?>
 <body>
-
 
    
 
@@ -18,6 +18,7 @@
   
         <h3>Dados Do Cliente</h3>
         <input type="hidden" id="id" name="id">
+       
         <label for="razao_social">Razão social:</label>
         <input type="text" id="razao_social" name="razao_social">
         <br>
@@ -92,7 +93,7 @@
     <script>
         $(document).ready(function () {
             debugger;
-            $("#id").val(44);
+            $("#id").val(<?php echo $_GET['id_cliente']; ?>);
 
             if($('#id').val() != ''){
                 loadFormularioAjax($('#id').val()); 
@@ -227,8 +228,7 @@
                         $("#municipio").val(data.municipio);
                         $("#pais").val(data.pais);
                         $("#cep").val(data.cep);
-
-                        
+                       
                     }, 
                     error: function (jqXHR, textStatus, errorThrown) {
                         alert("cliente não encontrado");

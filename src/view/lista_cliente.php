@@ -48,7 +48,7 @@
                         newRow.append("<td>" +cliente.nome_fantasia+ "</td>");
                         newRow.append("<td>" +cliente.email+"</td>");
                         newRow.append("<td>" +cliente.telefone+ "</td>");
-                        newRow.append("<td> <a href='#' class='edit-icon'><i class='fa fa-pencil'></i></a>&nbsp; <a href='#' onclick='delete_cliente("+cliente.id_cliente +")' class='remove-icon'><i class='fa fa-trash'></i></a> </td>"); 
+                        newRow.append("<td> <a href='http://localhost:81/src/view/editar_cliente.php?id_cliente="+cliente.id_cliente+"'Style='text-decoration: none ' class='edit-icon' onclick='edita_cliente("+cliente.id_cliente +")'><i class='fa fa-pencil'></i></a>&nbsp; <a href='#' onclick='delete_cliente("+cliente.id_cliente +")' class='remove-icon'><i class='fa fa-trash'></i></a> </td>"); 
                         // Adiciona a nova linha à tabela
                         $("#clientesTable").append(newRow);
                     });

@@ -39,6 +39,7 @@ class ClienteControllerTest extends TestCase
         $validateEndereco = $enderecoModel->getValidaDadosEndereco()['validate'];
         $this->assertTrue($validateEndereco);
 
+
         $clienteModel = new Cliente($dadosCliente, $enderecoModel);
         $enderecoRepository = new EnderecoRepository($conn, $enderecoModel);
         $clinteRepository = new ClienteRepository($conn);
@@ -55,7 +56,6 @@ class ClienteControllerTest extends TestCase
     public function testUpdateCliente()
     {
         // Dados de exemplo para criar um cliente
-
         $dadosCliente = [
             'id' => 1,
             'razaoSocial' => 'Empresa ABC',
