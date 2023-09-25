@@ -29,18 +29,18 @@ Antes de começar, verifique se você atendeu aos seguintes requisitos:
 Para montar o ambiente no windows, siga estas etapas:
 
 Windows:
-  1-instalação do Laragon 
-  2-instalação  do MYSQL 
-  3-instalação do vscode
-  4 -instalar plugin mysql no vscode
+  1. instalação do Laragon 
+  2. instalação  do MYSQL 
+  3. instalação do vscode
+  4. instalar plugin mysql no vscode
   
 
 Linux :
- 1- instalação do PHP 
- 2- instalação do apache
- 3- instalação do mysql
- 4- configuração do mysql
- 3- Habilitar modo de autenticação antiga no linux para logar  
+ 1. instalação do PHP 
+ 2. instalação do apache
+ 3. instalação do mysql
+ 4. configuração do mysql
+ 3. Habilitar modo de autenticação antiga no linux para logar  
 
 
 
